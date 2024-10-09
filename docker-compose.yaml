@@ -1,0 +1,158 @@
+# version: "3.7"
+# services:
+#   postgres:
+#     image: debezium/postgres:13
+#     ports:
+#       - 5432:5432
+#     environment:
+#       - POSTGRES_USER=docker
+#       - POSTGRES_PASSWORD=docker
+#       - POSTGRES_DB=inventory
+
+
+#   pgadmin:
+#         image: dpage/pgadmin4
+#         environment: 
+#             - PGADMIN_DEFAULT_EMAIL=pgadmin4@pgadmin.org
+#             - PGADMIN_DEFAULT_PASSWORD=admin1234
+#         ports:
+#             - '5050:80'
+#         restart: always
+
+
+#   zookeeper:
+#     image: confluentinc/cp-zookeeper:5.5.3
+#     environment:
+#       ZOOKEEPER_CLIENT_PORT: 2181
+
+#   kafka:
+#     image: confluentinc/cp-enterprise-kafka:5.5.3
+#     depends_on: [zookeeper]
+#     environment:
+#       KAFKA_ZOOKEEPER_CONNECT: "zookeeper:2181"
+#       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+#       KAFKA_BROKER_ID: 1
+#       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+#       KAFKA_JMX_PORT: 9991
+#     ports:
+#       - 9092:9092
+
+#   debezium:
+#     image: debezium/connect:1.4
+#     environment:
+#       BOOTSTRAP_SERVERS: kafka:9092
+#       GROUP_ID: 1
+#       CONFIG_STORAGE_TOPIC: connect_configs
+#       OFFSET_STORAGE_TOPIC: connect_offsets
+#       KEY_CONVERTER: io.confluent.connect.avro.AvroConverter
+#       VALUE_CONVERTER: io.confluent.connect.avro.AvroConverter
+#       CONNECT_KEY_CONVERTER_SCHEMA_REGISTRY_URL: http://schema-registry:8081
+#       CONNECT_VALUE_CONVERTER_SCHEMA_REGISTRY_URL: http://schema-registry:8081
+#     depends_on: [kafka]
+#     ports:
+#       - 8083:8083
+
+#   schema-registry:
+#     image: confluentinc/cp-schema-registry:5.5.3
+#     environment:
+#       - SCHEMA_REGISTRY_KAFKASTORE_CONNECTION_URL=zookeeper:2181
+#       - SCHEMA_REGISTRY_HOST_NAME=schema-registry
+#       - SCHEMA_REGISTRY_LISTENERS=http://schema-registry:8081,http://localhost:8081
+#     ports:
+#       - 8081:8081
+#     depends_on: [zookeeper, kafka]
+# volumes:
+#   postgres_data:
+
+version: "3.7"
+services:
+  postgres:
+    image: debezium/postgres:13
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_USER=docker
+      - POSTGRES_PASSWORD=docker
+      - POSTGRES_DB=inventory
+      - POSTGRES_DB_ANALYTICS=analytics
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  pgadmin:
+    image: dpage/pgadmin4
+    environment: 
+      - PGADMIN_DEFAULT_EMAIL=pgadmin4@pgadmin.org
+      - PGADMIN_DEFAULT_PASSWORD=admin1234
+    ports:
+      - '5050:80'
+    restart: always
+
+  zookeeper:
+    image: confluentinc/cp-zookeeper:5.5.3
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+
+  kafka:
+    image: confluentinc/cp-enterprise-kafka:5.5.3
+    depends_on: [zookeeper]
+    environment:
+      KAFKA_ZOOKEEPER_CONNECT: "zookeeper:2181"
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_BROKER_ID: 1
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_JMX_PORT: 9991
+    ports:
+      - 9092:9092
+
+  debezium:
+    image: debezium/connect:1.4
+    environment:
+      BOOTSTRAP_SERVERS: kafka:9092
+      GROUP_ID: 1
+      CONFIG_STORAGE_TOPIC: connect_configs
+      OFFSET_STORAGE_TOPIC: connect_offsets
+      KEY_CONVERTER: io.confluent.connect.avro.AvroConverter
+      VALUE_CONVERTER: io.confluent.connect.avro.AvroConverter
+      CONNECT_KEY_CONVERTER_SCHEMA_REGISTRY_URL: http://schema-registry:8081
+      CONNECT_VALUE_CONVERTER_SCHEMA_REGISTRY_URL: http://schema-registry:8081
+    depends_on: [kafka]
+    ports:
+      - 8083:8083
+
+  schema-registry:
+    image: confluentinc/cp-schema-registry:5.5.3
+    environment:
+      - SCHEMA_REGISTRY_KAFKASTORE_CONNECTION_URL=zookeeper:2181
+      - SCHEMA_REGISTRY_HOST_NAME=schema-registry
+      - SCHEMA_REGISTRY_LISTENERS=http://schema-registry:8081,http://localhost:8081
+    ports:
+      - 8081:8081
+    depends_on: [zookeeper, kafka]
+
+  connect:
+    image: confluentinc/cp-kafka-connect:5.5.3
+    ports:
+      - 8090:8084 
+    environment:
+      CONNECT_BOOTSTRAP_SERVERS: kafka:9092
+      CONNECT_REST_PORT: 8084
+      CONNECT_GROUP_ID: "jdbc-sink"
+      CONNECT_CONFIG_STORAGE_TOPIC: "connect_config"
+      CONNECT_OFFSET_STORAGE_TOPIC: "connect_offsets"
+      CONNECT_STATUS_STORAGE_TOPIC: "connect_statuses"
+      CONNECT_KEY_CONVERTER: "org.apache.kafka.connect.json.JsonConverter"
+      CONNECT_VALUE_CONVERTER: "org.apache.kafka.connect.json.JsonConverter"
+      CONNECT_KEY_CONVERTER_SCHEMAS_ENABLE: "false"
+      CONNECT_VALUE_CONVERTER_SCHEMAS_ENABLE: "false"
+      CONNECT_JDBC_URL: "jdbc:postgresql://postgres:5432/analytics"
+      CONNECT_JDBC_USER: "docker"
+      CONNECT_JDBC_PASSWORD: "docker"
+      CONNECT_PLUGIN_PATH: "/usr/share/java,/etc/kafka-connect/jars"
+      CONNECTOR_PLUGIN_URL: "https://packages.confluent.io/maven/io/confluent/kafka-connect-jdbc/10.2.0/kafka-connect-jdbc-10.2.0.jar"
+      CONNECT_JDBC_PLUGIN_PATH: "/usr/share/java/kafka-connect-jdbc"
+    depends_on:
+      - kafka
+      - postgres
+
+volumes:
+  postgres_data:
