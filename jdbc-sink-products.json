@@ -1,9 +1,9 @@
 {
-    "name": "jdbc-sink-connector",
+    "name": "jdbc-sink-products",
     "config": {
         "connector.class": "io.confluent.connect.jdbc.JdbcSinkConnector",
         "tasks.max": "1",
-        "topics": "inventory_updates",
+        "topics": "postgres.inventory.products",
         "connection.url": "jdbc:postgresql://postgres:5432/analytics",
         "connection.user": "docker",
         "connection.password": "docker",
@@ -12,6 +12,6 @@
         "insert.mode": "upsert",
         "pk.fields": "product_id",
         "pk.mode": "record_key",
-        "table.name.format": "inventory_analytics"
+        "table.name.format": "products"
     }
 }
