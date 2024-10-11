@@ -9,6 +9,6 @@
     "database.password": "docker",
     "database.dbname": "inventory",
     "database.server.name": "postgres",
-    "table.include.list": "public.productlines,public.products,public.offices,public.employees,public.customers,public.payments,public.orders,public.orderdetails"
+    "table.include.list": "public.categories,public.customers,public.products,public.orders,public.order_details"
   }
 }

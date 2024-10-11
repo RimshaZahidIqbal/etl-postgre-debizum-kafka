@@ -3220,3 +3220,4 @@ FOREIGN KEY (order_id) REFERENCES orders (order_id);
 ALTER TABLE order_details
 ADD CONSTRAINT fk_product
 FOREIGN KEY (product_id) REFERENCES products (product_id);
+

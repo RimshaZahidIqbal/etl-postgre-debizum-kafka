@@ -1,0 +1,24 @@
+[0m17:45:11.685364 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'start', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7a40c00bb1d0>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7a40c00bb590>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7a40c00bb050>]}
+
+
+============================== 17:45:11.689798 | 8a5b84a2-88cd-4b21-b3b7-f4a222b0de1d ==============================
+[0m17:45:11.689798 [info ] [MainThread]: Running with dbt=1.7.18
+[0m17:45:11.690477 [debug] [MainThread]: running dbt with arguments {'printer_width': '80', 'indirect_selection': 'eager', 'log_cache_events': 'False', 'write_json': 'True', 'partial_parse': 'True', 'cache_selected_only': 'False', 'warn_error': 'None', 'debug': 'False', 'version_check': 'True', 'log_path': 'logs', 'fail_fast': 'False', 'profiles_dir': '/home/rimsha/.dbt', 'use_colors': 'True', 'use_experimental_parser': 'False', 'no_print': 'None', 'quiet': 'False', 'log_format': 'default', 'introspect': 'True', 'static_parser': 'True', 'invocation_command': 'dbt init', 'target_path': 'None', 'warn_error_options': 'WarnErrorOptions(include=[], exclude=[])', 'send_anonymous_usage_stats': 'True'}
+[0m17:46:20.918718 [debug] [MainThread]: Starter project path: /home/rimsha/.local/lib/python3.11/site-packages/dbt/include/starter_project
+[0m17:46:21.156073 [info ] [MainThread]: 
+Your new dbt project "dbt_analysis" was created!
+
+For more information on how to configure the profiles.yml file,
+please consult the dbt documentation here:
+
+  https://docs.getdbt.com/docs/configure-your-profile
+
+One more thing:
+
+Need help? Don't hesitate to reach out to us via GitHub issues or on Slack:
+
+  https://community.getdbt.com/
+
+Happy modeling!
+
+[0m17:46:21.156944 [info ] [MainThread]: Setting up your profile.
